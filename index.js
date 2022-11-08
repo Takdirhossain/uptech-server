@@ -31,7 +31,6 @@ async function run() {
             const cursor = addservice.find(query)
             const order = await cursor.toArray()
             res.send(order)
-
         })
         app.get('/services/:id', async(req, res ) => {
             const id = req.params.id 
@@ -39,7 +38,6 @@ async function run() {
             const services = await addservice.findOne(query)
             res.send(services)
         })
-
     }
     finally {
 
