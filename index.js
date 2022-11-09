@@ -32,9 +32,14 @@ async function run() {
             console.log(service)
             const result = await addreview.insertOne(service)
             res.send(result)
-           
-        })
 
+        })
+        app.get('/review', async (req, res) => {
+            const query = {}
+            const cursor = addreview.find(query)
+            const review = await cursor.toArray()
+            res.send(review)
+        })
 
 
         app.get('/services', async (req, res) => {
