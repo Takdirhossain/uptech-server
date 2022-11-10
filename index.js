@@ -70,6 +70,18 @@ async function run() {
             const services = await addservice.findOne(query)
             res.send(services)
         })
+        app.put('/review/:id',async(req,res)=>{
+            const id=req.params.id
+            const query={_id:ObjectId(id)}
+            const data=req.body;
+            const update={
+                $set:{
+                    review:data.review
+                }
+            }
+            const result = await addreview.updateMany(query,update);
+            res.send(result);
+        })
     }
     finally {
 
