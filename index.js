@@ -8,7 +8,7 @@ app.use(cors())
 app.use(express.json())
 
 
-const uri = `mongodb+srv://uptech:2uYVYex14blsUnHm@cluster0.eurlfla.mongodb.net/?retryWrites=true&w=majority`
+const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.eurlfla.mongodb.net/?retryWrites=true&w=majority`
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 console.log(uri)
 async function run() {
@@ -29,17 +29,20 @@ async function run() {
 
         app.post('/review', async (req, res) => {
             const service = req.body
-            console.log(service)
             const result = await addreview.insertOne(service)
             res.send(result)
 
         })
         app.get('/review', async (req, res) => {
-            const query = {}
-            const cursor = addreview.find(query)
+            let query = {}
+            if (req.query?.email) {
+                query = { email: req.query?.email }
+            }
+            const cursor = addreview.find(query).sort({time: -1})
             const review = await cursor.toArray()
             res.send(review)
         })
+
 
         app.delete('/review/:id', async (req, res) => {
             const id = req.params.id 
@@ -47,6 +50,12 @@ async function run() {
             const result = await addreview.deleteOne(query)
             res.send(result)
             console.log(result)
+        })
+        app.get('/review/:id', async (req,  res) => {
+            const id = req.params.id 
+            const query = {_id: ObjectId(id)}
+            const result = await addreview.findOne(query)
+            res.send(result)
         })
 
         app.get('/services', async (req, res) => {
